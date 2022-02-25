@@ -87,6 +87,7 @@
 
   dispatch_async(self.sessionManager.sessionQueue, ^{
       NSLog(@"Starting session");
+      self.frameNumber = 0;
       [self.sessionManager.session startRunning];
       });
 }
@@ -234,11 +235,10 @@
       
 
     if(self.sessionManager.assetWriterInput.readyForMoreMediaData && self.sessionManager.isRecording) {
-      static int64_t frameNumber = 0;
       NSLog (@"readyForMoreMediaData");
       CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-      [self.sessionManager.pixelBufferAdaptor appendPixelBuffer:imageBuffer withPresentationTime:CMTimeMake(frameNumber, 25)];
-      frameNumber++;
+      [self.sessionManager.pixelBufferAdaptor appendPixelBuffer:imageBuffer withPresentationTime:CMTimeMake(self.frameNumber, 25)];
+      self.frameNumber++;
     }
     [self.renderLock unlock];
   }
